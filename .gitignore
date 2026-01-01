@@ -1,0 +1,22 @@
+# Vivado and simulation files
+*.jou
+*.log
+*.str
+*.wdb
+*.dcp
+*.rpt
+*.xml
+
+.cache/
+.sim/
+.hw/
+.ip_user_files/
+.runs/
+.xsim/
+
+# Waveform files
+*.vcd
+
+# OS files
+.DS_Store
+Thumbs.db
