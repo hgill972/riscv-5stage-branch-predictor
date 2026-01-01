@@ -1,0 +1,71 @@
+`timescale 1ns/1ps
+module RISCV_2_tb;
+    // Inputs
+    reg clk;
+    reg reset;
+
+    // Outputs (top-level)
+    wire [3:0] data4bitpart1, data4bitpart2;
+    wire [6:0] sout_1, sout_2;
+    wire [31:0] ResultW;
+
+    // Instantiate DUT
+    RISCV_2 uut (
+        .clk(clk),
+        .reset(reset),
+        .data4bitpart1(data4bitpart1),
+        .data4bitpart2(data4bitpart2),
+        .sout_1(sout_1),
+        .sout_2(sout_2),
+        .ResultW(ResultW)
+    );
+
+    // ----------------------------
+    // Clock generation (10 ns)
+    // ----------------------------
+    always #5 clk = ~clk;
+
+    // ----------------------------
+    // Reset + run
+    // ----------------------------
+    initial begin
+        clk   = 0;
+        reset = 1;
+
+        #20;
+        reset = 0;
+
+        #500;
+        $finish;
+    end
+
+    // ----------------------------
+    // WAVEFORM DUMP (VERY IMPORTANT)
+    // ----------------------------
+    initial begin
+        $dumpfile("riscv_wave.vcd");
+        $dumpvars(0, RISCV_2_tb);
+    end
+
+
+    always @(posedge clk) begin
+        if (!reset) begin
+            $display(
+                "T=%0t | PC=%0d | Instr=%h | RS1=%0d RS2=%0d | RD1=%0d RD2=%0d | FwdA=%b FwdB=%b | Pred=%b Act=%b | ResultW=%0d",
+                $time,
+                uut.addressoutput,
+                uut.dataout,
+                uut.RS1E,
+                uut.RS2E,
+                uut.RD1E,
+                uut.RD2E,
+                uut.ForwardAE,
+                uut.ForwardBE,
+                uut.branchoperand,
+                uut.flag,
+                ResultW
+            );
+        end
+    end
+
+endmodule
